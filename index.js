@@ -6,14 +6,19 @@ const bodyParser =require('body-parser')
 const firmroutes =require('./routes/firmroutes')
 const productRoutes =require('./routes/productRoutes')
 const path=require('path');
+const cors=require('cors');
+
+const app = express();
+
+const port =process.env.port|| 4000;
 
 dotEnv.config();
+app.use(cors())
 
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("connected to monodb"))
   .catch((error) => console.log(error));
-const app = express();
-const port =process.env.port|| 4000;
+
 
 // ✅ Add this middleware to parse JSON request bodies
 app.use(express.json());  // <-- This is what you're missing!
