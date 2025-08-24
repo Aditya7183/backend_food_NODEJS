@@ -7,6 +7,6 @@ router.post('/login',vendorcontroller.vendorlogin);
 
 
 router.get('/all-vendors',vendorcontroller.getAllVendors);
-router.get('/single-vendor/:id',vendorcontroller.getVendorBYId)
+router.get('/single-vendor/:vendorId',vendorcontroller.getVendorBYId)
 
 module.exports = router;

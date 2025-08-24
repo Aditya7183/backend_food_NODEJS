@@ -10,7 +10,7 @@ const path =require('path')
             cb(null, './uploads/');
       },
       filename: function (req, file, cb) {
-        cb(null. Date.mow()+ Path.extname(file.originalname));
+        cb(null, Date.now()+ path.extname(file.originalname));
       }}
     );
     const upload = multer({ storage: storage });
@@ -56,17 +56,26 @@ const path =require('path')
           }
         }
 
-   const deleteProducctById=async(req,res)=>{
-       try{
-        const  productId =req.params.productId;
-        const deletedProduct =await Product.findByIdAndDelete(productId);
-        if(!deletedProduct){
-          return res.status(404).json({error:"product not found"});
-       }
-   } catch(error){
-    console.error(error);
-    res.status(500).json({error:"Internal server error"})
-   }   
-  }
+  const deleteProducctById = async (req, res) => {
+  try {
+    const productId = req.params.productId;
 
+    // Find and delete the product
+    const deletedProduct = await Product.findByIdAndDelete(productId);
+    if (!deletedProduct) {
+      return res.status(404).json({ error: "Product not found" });
+    }
+
+    // Also remove the product reference from Firm.products
+    await Firm.updateOne(
+      { _id: deletedProduct.firm },
+      { $pull: { products: productId } }
+    );
+
+    return res.status(200).json({ message: "Product deleted successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
     module.exports={addProduct:[upload.single('image'),addProduct],getProductByFirm,deleteProducctById};
